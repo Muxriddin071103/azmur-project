@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/azmur_db
+    username: postgres
+    password: root123
+  application:
+    name: azmur
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+my_token:
+  key: hereIsMySecretKeyForAzmurProject
+  expire_time: 3600000
