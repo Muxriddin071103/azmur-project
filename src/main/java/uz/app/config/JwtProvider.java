@@ -13,17 +13,16 @@ import java.util.Date;
 @Component
 public class JwtProvider {
     @Value("${my_token.key}")
-    String key;
+    private String key;
     @Value("${my_token.expire_time}")
-    Long expireTime;
+    private Long expireTime;
 
     public String generateToken(UserDetails userDetails) {
-        Date date = new Date(System.currentTimeMillis()+expireTime);
-        return Jwts
-                .builder()
+        Date expiryDate = new Date(System.currentTimeMillis() + expireTime);
+        return Jwts.builder()
                 .setIssuedAt(new Date())
                 .setSubject(userDetails.getUsername())
-                .setExpiration(date)
+                .setExpiration(expiryDate)
                 .signWith(signKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -32,20 +31,21 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(key.getBytes());
     }
 
-    public String getSubject(String auth) {
-        String subject ="";
+    public String getSubject(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid or missing Authorization header");
+        }
+
         try {
-            subject = Jwts
-                    .parserBuilder()
+            String token = authHeader.substring(7);
+            return Jwts.parserBuilder()
                     .setSigningKey(signKey())
                     .build()
-                    .parseClaimsJws(auth)
+                    .parseClaimsJws(token)
                     .getBody()
-                    .getSubject()
-                    .toString();
-        }catch (Exception e){
-            e.printStackTrace();
+                    .getSubject();
+        } catch (Exception e) {
+            throw new RuntimeException("JWT parsing failed: " + e.getMessage());
         }
-        return subject;
     }
 }

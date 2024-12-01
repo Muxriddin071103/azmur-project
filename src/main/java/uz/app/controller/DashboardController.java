@@ -1,27 +1,33 @@
 package uz.app.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import uz.app.entity.User;
 import uz.app.util.UserUtil;
 
-@Controller
+import java.util.Optional;
+
+@RestController
 @RequiredArgsConstructor
 public class DashboardController {
 
     private final UserUtil userUtil;
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        userUtil.getCurrentUser().ifPresent(user -> model.addAttribute("user", user));
-        String fullName = userUtil.getCurrentUserFullName();
-        model.addAttribute("fullName", fullName);
-        return "main-page";
+    public ResponseEntity<?> dashboard() {
+        Optional<User> currentUser = userUtil.getCurrentUser();
+
+        if (currentUser.isPresent()) {
+            User user = currentUser.get();
+            String fullName = userUtil.getCurrentUserFullName();
+            return ResponseEntity.ok(new DashboardResponse(user, fullName));
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
     }
 
-    @GetMapping("/")
-    public String index() {
-        return "redirect:/auth/sign-up";
+    private record DashboardResponse(User user, String fullName) {
     }
 }

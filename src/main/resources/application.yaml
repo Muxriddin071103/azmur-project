@@ -10,5 +10,5 @@ spring:
     hibernate:
       ddl-auto: update
 my_token:
-  key: hereIsMySecretKeyForAzmurProject
+  key: my-very-secret-key-with-32-characters-minimum
   expire_time: 3600000

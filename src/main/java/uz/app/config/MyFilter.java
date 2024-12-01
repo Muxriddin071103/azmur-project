@@ -33,18 +33,16 @@ public class MyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
 
-        String authorization = request.getHeader("Authorization");
-
-        if(authorization == null || authorization.equals("annonumous")){
-            filterChain.doFilter(request, response);
-            return;
-        }
-        if (authorization.startsWith("Bearer ")) {
-            authorization = authorization.substring(7);
-            String  username = jwtProvider.getSubject(authorization);
-            System.out.println(username);
-            setAuthenticationToContext(username);
-        }
+            String authorization = request.getHeader("Authorization");
+            if (authorization == null || authorization.equals("annonumous")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            if (authorization.startsWith("Bearer ")) {
+                authorization = authorization.substring(7);
+                String username = jwtProvider.getSubject(authorization);
+                setAuthenticationToContext(username);
+            }
 
         }catch (Exception e){
         }
