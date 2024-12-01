@@ -12,3 +12,4 @@ spring:
 my_token:
   key: my-very-secret-key-with-32-characters-minimum
   expire_time: 3600000
+  refresh_expire_time: 86400000

@@ -8,6 +8,7 @@ import uz.app.entity.User;
 import uz.app.entity.enums.Role;
 import uz.app.payload.LoginRequest;
 import uz.app.payload.SignUpDTO;
+import uz.app.payload.RefreshTokenRequest;
 import uz.app.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -52,6 +53,21 @@ public class AuthService {
             throw new RuntimeException("Wrong password");
         }
 
-        return jwtProvider.generateToken(user);
+        String accessToken = jwtProvider.generateToken(user);
+        String refreshToken = jwtProvider.generateRefreshToken(user);
+
+        return accessToken + " " + refreshToken;
+    }
+
+    public String refreshAccessToken(String refreshToken) {
+        if (jwtProvider.validateToken(refreshToken)) {
+            String username = jwtProvider.getSubject(refreshToken);
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            return jwtProvider.generateToken(user);
+        } else {
+            throw new RuntimeException("Invalid refresh token");
+        }
     }
 }

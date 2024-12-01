@@ -16,9 +16,21 @@ public class JwtProvider {
     private String key;
     @Value("${my_token.expire_time}")
     private Long expireTime;
+    @Value("${my_token.refresh_expire_time}")
+    private Long refreshExpireTime;
 
     public String generateToken(UserDetails userDetails) {
         Date expiryDate = new Date(System.currentTimeMillis() + expireTime);
+        return Jwts.builder()
+                .setIssuedAt(new Date())
+                .setSubject(userDetails.getUsername())
+                .setExpiration(expiryDate)
+                .signWith(signKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        Date expiryDate = new Date(System.currentTimeMillis() + refreshExpireTime);
         return Jwts.builder()
                 .setIssuedAt(new Date())
                 .setSubject(userDetails.getUsername())
@@ -46,6 +58,15 @@ public class JwtProvider {
                     .getSubject();
         } catch (Exception e) {
             throw new RuntimeException("JWT parsing failed: " + e.getMessage());
+        }
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(signKey()).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

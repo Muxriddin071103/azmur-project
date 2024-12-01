@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.app.entity.User;
 import uz.app.payload.LoginRequest;
 import uz.app.payload.SignUpDTO;
+import uz.app.payload.RefreshTokenRequest;
 import uz.app.service.AuthService;
 
 @RequiredArgsConstructor
@@ -32,6 +33,16 @@ public class AuthController {
             return ResponseEntity.ok(token);
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body("Invalid credentials or account not activated");
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        try {
+            String newAccessToken = authService.refreshAccessToken(refreshTokenRequest.getRefreshToken());
+            return ResponseEntity.ok(newAccessToken);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body("Invalid refresh token");
         }
     }
 }
