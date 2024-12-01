@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url("https://codingstella.com/wp-content/uploads/2024/01/download-8-scaled.jpeg")
+    no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.form-box {
+    width: 360px;
+    padding: 40px 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    color: #fff;
+}
+
+.form-box h2 {
+    font-size: 1.8em;
+    margin-bottom: 30px;
+    color: #fff;
+    text-align: center;
+}
+
+.inputbox {
+    position: relative;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #fff;
+}
+
+.inputbox label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #ccc;
+    font-size: 0.9em;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.inputbox input {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    color: #fff;
+    font-size: 1em;
+}
+
+.inputbox input:focus ~ label,
+.inputbox input:valid ~ label {
+    top: -10px;
+    font-size: 0.8em;
+    color: #fff;
+}
+
+.inputbox ion-icon {
+    position: absolute;
+    right: 10px;
+    color: #ccc;
+    font-size: 1.1em;
+    top: 12px;
+}
+
+button {
+    width: 100%;
+    height: 45px;
+    border-radius: 40px;
+    background: #fff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    color: #333;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #fff;
+}
+
+.register {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.85em;
+    color: #ccc;
+}
+
+.register p a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.register p a:hover {
+    text-decoration: underline;
+}
