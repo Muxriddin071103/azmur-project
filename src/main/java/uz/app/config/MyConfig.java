@@ -44,7 +44,7 @@ public class MyConfig {
                 .userDetailsService(userDetailsService())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**","/").permitAll()
+                        .requestMatchers("/auth/**","/","/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import uz.app.config.JwtProvider;
 import uz.app.entity.User;
 import uz.app.entity.enums.Role;
+import uz.app.payload.AuthRequest;
 import uz.app.payload.LoginRequest;
 import uz.app.payload.SignUpDTO;
-import uz.app.payload.RefreshTokenRequest;
 import uz.app.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -40,7 +40,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public String authenticateUser(LoginRequest loginRequest) {
+    public AuthRequest authenticateUser(LoginRequest loginRequest) {
         User user = userRepository.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -56,18 +56,17 @@ public class AuthService {
         String accessToken = jwtProvider.generateToken(user);
         String refreshToken = jwtProvider.generateRefreshToken(user);
 
-        return accessToken + " " + refreshToken;
+        return new AuthRequest(accessToken, refreshToken);
     }
 
-    public String refreshAccessToken(String refreshToken) {
-        if (jwtProvider.validateToken(refreshToken)) {
-            String username = jwtProvider.getSubject(refreshToken);
-            User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            return jwtProvider.generateToken(user);
-        } else {
-            throw new RuntimeException("Invalid refresh token");
+    public User getUserFromAccessToken(String accessToken) {
+        if (!jwtProvider.validateToken(accessToken)) {
+            throw new RuntimeException("Invalid or expired access token");
         }
+
+        String username = jwtProvider.getSubject(accessToken);
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

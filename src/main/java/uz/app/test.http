@@ -1,0 +1,20 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "username": "string",
+    "password": "string"
+}
+
+###
+
+GET http://localhost:8080/auth/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzMxNDU5NTgsInN1YiI6InN0cmluZyIsImV4cCI6MTczMzE0OTU1OH0.UpPDkj7iDmOSJFVrbUoz593wEX-fyeLDgd_pKsvzhc8
+
+###

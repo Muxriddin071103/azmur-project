@@ -45,7 +45,7 @@ public class UserService {
             user.setLastName(updatedUser.getLastName());
             user.setAge(updatedUser.getAge());
             user.setUsername(updatedUser.getUsername());
-            user.setPassword(updatedUser.getPassword());
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             userRepository.save(user);
         }
     }

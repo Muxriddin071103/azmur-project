@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.app.entity.User;
+import uz.app.payload.AuthRequest;
 import uz.app.payload.LoginRequest;
 import uz.app.payload.SignUpDTO;
 import uz.app.payload.RefreshTokenRequest;
@@ -27,22 +28,27 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> signIn(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthRequest> signIn(@RequestBody LoginRequest loginRequest) {
         try {
-            String token = authService.authenticateUser(loginRequest);
-            return ResponseEntity.ok(token);
+            AuthRequest authResponse = authService.authenticateUser(loginRequest);
+            return ResponseEntity.ok(authResponse);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(401).body("Invalid credentials or account not activated");
+            return ResponseEntity.status(401).body(null);
         }
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<String> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    @GetMapping("/user")
+    public ResponseEntity<User> getUserFromToken(@RequestHeader(value = "Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(400).body(null);
+        }
         try {
-            String newAccessToken = authService.refreshAccessToken(refreshTokenRequest.getRefreshToken());
-            return ResponseEntity.ok(newAccessToken);
+            String token = authorizationHeader.substring(7);
+            User user = authService.getUserFromAccessToken(token);
+            return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(401).body("Invalid refresh token");
+            return ResponseEntity.status(401).body(null);
         }
     }
+
 }
